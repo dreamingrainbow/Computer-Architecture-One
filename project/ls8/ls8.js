@@ -6,33 +6,34 @@ const CPU = require('./cpu');
  * Process a loaded file
  */
 function processFile(content, cpu, onComplete) {
+    console.log('Process File Started.');
     // Pointer to the memory address in the CPU that we're
     // loading a value into:
     let curAddr = 0;
     
     // Split the lines of the content up by newline
     const lines = content.split('\n');
-
     // Loop through each line of machine code
-
     for (let line of lines) {
-
         // !!! IMPLEMENT ME
-
         // Strip comments
-
+        if(line.indexOf('#') !== 0 || line.indexOf(' ') !== 0 ){
         // Remove whitespace from either end of the line
-
-        // Ignore empty lines
-
-        // Convert from binary string to numeric value
-
-        // Store in the CPU with the .poke() function
-
-        // And on to the next one
-        curAddr++;
+            line = line.trim();
+            // Ignore empty lines
+            if(line.length > 0) {
+                let commandSetArr = line.split(' ');
+                // 0 Binary 1 Hash 2 Ins 3 Res 4 Res
+                // Convert from binary string to numeric value
+                let value = commandSetArr[0];
+                // Store in the CPU with the .poke() function
+                cpu.poke(curAddr, parseInt(value, 2));        
+                // And on to the next one
+                curAddr++;
+            }
+        }
     }
-
+    console.log('Start the clock');
     onComplete(cpu);
 }
 
@@ -63,6 +64,7 @@ function loadFile(filename, cpu, onComplete) {
  * CPU is set up, start it running
  */
 function onFileLoaded(cpu) {
+    console.log('File loaded. Start the clock.');
     cpu.startClock();
 }
 
